@@ -1,10 +1,10 @@
 pragma solidity ^0.8.0;
 
-import "./@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "./@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol"; 
-import "./@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol"; 
-import "./@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol"; 
-import "./@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol"; 
+import "./contracts-upgradeable/proxy/utils/Initializable.sol";
+import "./contracts-upgradeable/access/OwnableUpgradeable.sol"; 
+import "./contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol"; 
+import "./contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol"; 
+import "./contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol"; 
 
 
 contract TopholderData {
@@ -18,11 +18,11 @@ contract Topholder is Initializable, OwnableUpgradeable, ERC721URIStorageUpgrade
 
     event SetTokenIdType(uint256, bool); 
 
-	function initialize()public initializer{
+	function initialize() public initializer{
         admins[msg.sender] = 1;
         __ERC721_init("topholder", "TP");
-		__Context_init_unchained();
-		__Ownable_init_unchained();
+		__Context_init();
+		__Ownable_init();
 	} 
 
     modifier onlyAuth {
@@ -47,16 +47,11 @@ contract Topholder is Initializable, OwnableUpgradeable, ERC721URIStorageUpgrade
 
     function denyOper(address oper) external onlyAuth { _wards[oper] = 0;}
 
-
-    // constructor() ERC721("Dphotos", "DPT") {
-    //     admins[msg.sender] = 1;
-    // }
-
     /**
     * create a unique token
     */
     function mintUniqueTokenTo(address to, uint256 tokenId, string memory uri, bool idType) public {
-        super._mint(to, tokenId, idType);
+        _mint(to, tokenId, idType);
         super._setTokenURI(tokenId, uri);
     }
 
@@ -68,9 +63,6 @@ contract Topholder is Initializable, OwnableUpgradeable, ERC721URIStorageUpgrade
         _tokenIdType[tokenId] = idType;
         emit SetTokenIdType(tokenId, idType);
     }
-
-
-
 
     /**
      * 只有owner和授权者，才有权限销毁NFT
@@ -84,12 +76,12 @@ contract Topholder is Initializable, OwnableUpgradeable, ERC721URIStorageUpgrade
     /**
      * 设置NFT的 baseUri
      */
-    function setBaseURI(string memory baseUri_) internal {
+    function setBaseURI(string memory baseUri_) internal onlyOwner {
         _baseUri = baseUri_;
     }
 
     /**
-     *  定义NFT的baseURI
+     *  NFT的baseURI
      */
     function _baseURI() internal view virtual override  returns (string memory) {
         return _baseUri;
@@ -145,8 +137,8 @@ contract Topholder is Initializable, OwnableUpgradeable, ERC721URIStorageUpgrade
 
         _beforeTokenTransfer(address(0), to, tokenId);
 
-        super._balances[to] += 1;
-        super._owners[tokenId] = to;
+        _balances[to] += 1;
+        _owners[tokenId] = to;
 
         _tokenIdType[tokenId] = idType;
 

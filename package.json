@@ -1,0 +1,23 @@
+{
+  "name": "topholder721",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "truffle compile --all",
+    "dev": "truffle migrate --network dev ",
+    "rinkeby": "truffle migrate --network rinkeby --reset",
+    "bsn_online": "truffle migrate --network bsn_online --reset"
+  },
+  "keywords": ["upgradeable"],
+  "author": "yuyongpeng",
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/contracts": "^4.5.0",
+    "@openzeppelin/contracts-upgradeable": "^4.5.2",
+    "@openzeppelin/truffle-upgrades": "^1.14.0",
+    "@truffle/hdwallet-provider": "^2.0.4",
+    "hardhat": "^2.9.1",
+    "truffle": "^5.5.4"
+  }
+}
